@@ -1,0 +1,6 @@
+{
+  "status": "blocked",
+  "rows": [],
+  "failures": [],
+  "reason": "[pid=14][err] [1028/215449.078070:FATAL:content/browser/sandbox_host_linux.cc:41] Check failed: . shutdown: Operation not permitted (1)"
+}

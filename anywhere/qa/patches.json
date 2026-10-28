@@ -1,0 +1,12 @@
+[
+  "lifecycle and coexistence",
+  "keyboard guard",
+  "panel resources",
+  "offline sprites",
+  "panel cleanup",
+  "resumable ticker start",
+  "resumable ticker end",
+  "resume ticker",
+  "preserve shop pause timestamp",
+  "replay suspended recipe"
+]

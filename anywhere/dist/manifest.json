@@ -1,0 +1,13 @@
+{
+  "kind": "marinara.personal-extension",
+  "version": 1,
+  "config": {
+    "name": "가챠 미니게임 · 어디서나",
+    "version": "0.1.0",
+    "description": "lemonpie601의 Gacha Mini Games v1.3.1 기반 비공식 확장. 어디서나 게임 열기, RP 생성 대기 자동 열기, 가챠포지 표시 유지. 내부 키: gacha_minigames_me.",
+    "runtime": "client",
+    "enabled": false,
+    "capabilities": ["full_page_access"],
+    "jsPath": "extension.js"
+  }
+}

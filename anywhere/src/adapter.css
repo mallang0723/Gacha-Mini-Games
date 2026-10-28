@@ -1,0 +1,45 @@
+/* All styles are inside our ShadowRoots. No font, image or stylesheet downloads. */
+:host { font-family:system-ui,"Malgun Gothic",sans-serif; }
+:host(#gacha_minigames_me) { position:fixed; inset:0; z-index:2147483000; pointer-events:none; color:var(--gfx-text,#5A3A24); }
+* { box-sizing:border-box; }
+[hidden] { display:none !important; }
+button,input,summary { font:inherit; }
+button,summary { cursor:pointer; }
+button { color:inherit; background:var(--gfx-card,#FFFDF5); border:2px solid var(--gfx-line,#6B4528); border-radius:14px; padding:8px 12px; min-width:44px; min-height:44px; }
+button:focus-visible,summary:focus-visible,input:focus-visible { outline:3px solid var(--gfx-accent,#F0763A); outline-offset:2px; }
+#launcher { position:fixed; right:max(12px,env(safe-area-inset-right)); width:48px; height:48px; padding:0; font-size:24px; pointer-events:auto; touch-action:none; user-select:none; box-shadow:0 3px 0 var(--gfx-line,#6B4528); }
+#panel { position:fixed; right:12px; bottom:max(76px,env(safe-area-inset-bottom)); width:min(960px,calc(100vw - 24px)); height:min(740px,calc(100vh - 96px)); height:min(740px,calc(100dvh - 96px)); display:flex; flex-direction:column; gap:8px; padding:12px; pointer-events:auto; border:3px solid var(--gfx-line,#6B4528); border-radius:20px; background:var(--gfx-ink,#FFF4D9); box-shadow:0 8px 32px #0003; overflow:auto; }
+header { display:flex; justify-content:space-between; align-items:center; gap:8px; flex:none; }
+header strong { font-size:16px; }
+#settings { flex:none; }
+summary { min-height:44px; padding:10px; border-radius:12px; background:var(--gfx-card,#FFFDF5); }
+label { min-height:44px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+input[type=checkbox] { width:24px; height:24px; accent-color:var(--gfx-accent,#F0763A); flex:none; }
+#detector-status { margin:8px 0; font-size:13px; }
+#arrival { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px; background:var(--gfx-pick,#FFE17A); border-radius:12px; flex:none; }
+#arrival span { margin-right:auto; }
+#toast { position:fixed; right:12px; bottom:12px; padding:12px 20px; border:2px solid var(--gfx-line,#6B4528); border-radius:14px; background:var(--gfx-card,#FFFDF5); }
+#games { flex:1; min-height:180px; overflow:auto; }
+:host([data-anywhere-game]),:host([data-anywhere-game][data-game-large]) { position:relative; inset:auto; display:block; width:100%; height:100%; min-height:180px; pointer-events:auto; container-type:size; }
+.gfx-load-games { font-family:system-ui,"Malgun Gothic",sans-serif; font-size:15px; }
+.gfx-load-games button { min-width:44px; min-height:44px; }
+:host([data-anywhere-game]) .gfx-load-games { --room:max(220px,calc(100cqh - 180px)); height:100%; }
+:host([data-anywhere-game]) .gfx-game-content { min-width:0; }
+.gfx-game-stage { overflow:auto; padding:4px 4px 10px; }
+.gfx-game-board:is([data-kind=mines],[data-kind=fruits],[data-kind=pop],[data-kind=memory],[data-kind=slide],[data-kind=lights],[data-kind=merge]) { min-width:calc(var(--cols) * 48px + 8px); }
+.gfx-game-pad { grid-template-columns:repeat(3,44px); }
+.gfx-game-board[data-kind=shop] .gfx-shop-shelf { grid-template-columns:repeat(4,minmax(44px,1fr)); }
+:host([data-anywhere-game]) .gfx-game-utils button:first-child { display:none; }
+@media (max-width:600px) {
+  #panel { padding:8px; gap:6px; }
+  .gfx-load-games { flex-direction:column; align-items:stretch; gap:8px; }
+  .gfx-game-nav { flex:none; display:flex; flex-direction:row; flex-wrap:nowrap; justify-content:flex-start; overflow:auto; width:100%; max-height:none; padding:6px; gap:6px; }
+  .gfx-game-tab { flex:none; min-width:76px; }
+  .gfx-game-utils { flex:none; }
+  .gfx-game-content { flex:none; width:100%; padding:8px; max-height:none; overflow:visible; }
+  .gfx-game-tools { justify-content:flex-start; }
+  .gfx-game-levels { flex-wrap:wrap; }
+  :host([data-anywhere-game]) .gfx-load-games { height:auto; }
+  .gfx-game-board[data-kind=shop] { width:100%; }
+}
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition:none !important; } }

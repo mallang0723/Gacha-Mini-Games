@@ -1,0 +1,14 @@
+{
+  "name": "gacha_minigames_me",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify:original": "node scripts/verify-original.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs && node --test --test-isolation=none tests/*.test.mjs",
+    "qa:browser": "node scripts/build.mjs && node scripts/browser-qa.mjs",
+    "package": "node scripts/package.mjs"
+  },
+  "devDependencies": { "jsdom": "29.1.1", "playwright": "1.64.1" }
+}
