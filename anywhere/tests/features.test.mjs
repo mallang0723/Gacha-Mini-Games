@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setup, source, upstream } from './dom.mjs';
 const closed = h => h.root.getElementById('panel').hidden;
-const launch = h => h.root.getElementById('launcher').click();
+const launch = h => h.root.getElementById('gacha-minigames-launcher').click();
 const start = h => h.update({ isStreaming: true, streamingChatId: 'chat-one' });
 const stop = h => h.update({ isStreaming: false, streamingChatId: null });
 const feature = (name, options, run) => test(name, async () => { const h = await setup(options); try { await run(h); assert.deepEqual(h.errors, []); } finally { h.close(); } });
@@ -12,7 +12,7 @@ feature('버튼 하나 생성, 수동 열기/닫기, HTTP 및 crypto 없음', {}
   h.root.getElementById('close').click(); assert.ok(closed(h));
 });
 feature('세로 드래그 상하 클램프, 수평 위치 유지, 저장과 클릭 억제', {}, h => {
-  const button = h.root.getElementById('launcher');
+  const button = h.root.getElementById('gacha-minigames-launcher');
   h.pointer('pointerdown', 400); h.pointer('pointermove', -400, 0); h.pointer('pointerup', -400); button.click();
   assert.equal(button.style.top, '12px'); assert.ok(closed(h)); assert.equal(button.style.left, '');
   h.pointer('pointerdown', 12); h.pointer('pointermove', 2000, 0); h.pointer('pointerup', 2000); button.click();
@@ -20,9 +20,10 @@ feature('세로 드래그 상하 클램프, 수평 위치 유지, 저장과 클�
 });
 feature('길게 누르기 초기화, pointercancel, 작은 높이와 리사이즈', { position: 20 }, async h => {
   h.pointer('pointerdown', 20); await h.advance(700); h.pointer('pointerup', 20); launch(h);
-  assert.equal(h.root.getElementById('launcher').style.top, '384px'); assert.ok(closed(h));
-  h.pointer('pointerdown', 384); h.pointer('pointercancel', 384); await h.advance(800); launch(h); assert.ok(closed(h));
-  h.w.innerHeight = 100; h.w.dispatchEvent(new h.w.Event('resize')); assert.equal(h.root.getElementById('launcher').style.top, '40px');
+  assert.equal(h.root.getElementById('gacha-minigames-launcher').style.top, '384px'); assert.ok(closed(h));
+  h.pointer('pointerdown', 384); h.pointer('pointercancel', 384); launch(h); assert.ok(closed(h));
+  await h.advance(800); launch(h); assert.ok(!closed(h));
+  h.w.innerHeight = 100; h.w.dispatchEvent(new h.w.Event('resize')); assert.equal(h.root.getElementById('gacha-minigames-launcher').style.top, '40px');
 });
 feature('스토어 시작 → 2499ms 닫힘 → 2500ms 열림 → 끝 토스트/선택', {}, async h => {
   const editor = h.d.getElementById('chat'); editor.focus(); start(h);
@@ -83,7 +84,7 @@ feature('중복 주입은 이전 인스턴스와 구독 정리 후 하나만 생
 });
 feature('cleanup은 타이머/프레임/리스너/구독/DOM 모두 해제하며 재호출 안전', {}, async h => {
   launch(h); h.games().querySelector('[data-game=pinball]').click(); start(h); h.pointer('pointerdown', 400);
-  const button = h.root.getElementById('launcher'); h.cleanup(); h.cleanup();
+  const button = h.root.getElementById('gacha-minigames-launcher'); h.cleanup(); h.cleanup();
   assert.equal(h.pending.size, 0); assert.equal(h.subscriptions.size, 0); assert.equal(h.d.getElementById('gacha_minigames_me'), null);
   button.click(); h.pointer('pointermove', 20); start(h); await h.advance(10000); assert.equal(h.pending.size, 0);
   assert.equal(h.w.gacha_minigames_me, undefined); assert.equal(h.w.__GF_MINIGAMES_EXTENSION, undefined);

@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { root } from './verify-original.mjs';
 const { chromium } = dependency('playwright');
-const report = { status: 'running', rows: [], failures: [] };
+const report = { status: 'running', rows: [], remote: [], failures: [] };
 let browser;
 try {
   browser = await chromium.launch({ headless: true, executablePath: process.env.ANYWHERE_CHROMIUM || undefined, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
@@ -22,7 +22,31 @@ try {
       window.marinara = { onCleanup: fn => cleanups.push(fn), fetch: () => { throw new Error('Unexpected fetch'); } };
     });
     await page.addScriptTag({ content: readFileSync(resolve(root, 'dist/extension.js'), 'utf8') });
-    await page.locator('#launcher').click();
+    const remote = await page.evaluate(() => {
+      const ui = document.getElementById('gacha_minigames_me').shadowRoot;
+      const launcher = ui.getElementById('gacha-minigames-launcher'), panel = ui.getElementById('panel');
+      const visibleForPicking = launcher.getClientRects().length > 0 && getComputedStyle(launcher).visibility !== 'hidden'
+        && !launcher.closest('[inert],[aria-hidden="true"]');
+      launcher.click();
+      const normal = panel.getBoundingClientRect().toJSON();
+      launcher.click();
+      const style = document.createElement('style');
+      style.textContent = '.remote-hidden { display:none !important; }'; ui.append(style);
+      launcher.classList.add('remote-hidden');
+      window.dispatchEvent(new Event('resize'));
+      launcher.click();
+      const hidden = panel.getBoundingClientRect().toJSON();
+      const passed = visibleForPicking && launcher.dataset.testid === launcher.id
+        && launcher.getClientRects().length === 0 && !panel.hidden && hidden.width > 0
+        && JSON.stringify(normal) === JSON.stringify(hidden) && launcher.classList.contains('remote-hidden');
+      launcher.click();
+      const closed = panel.hidden;
+      launcher.classList.remove('remote-hidden'); style.remove();
+      return { passed: passed && closed, visibleForPicking };
+    });
+    report.remote.push({ viewport, ...remote });
+    if (!remote.passed) report.failures.push({ viewport, remote });
+    await page.locator('#gacha-minigames-launcher').click();
     const names = await page.locator('.gfx-game-tab').evaluateAll(tabs => tabs.map(t => t.dataset.game));
     for (const game of names) {
       await page.locator(`.gfx-game-tab[data-game="${game}"]`).click();
@@ -61,7 +85,10 @@ try {
   report.status = report.failures.length ? 'failed' : 'passed';
 } catch (error) {
   report.status = 'blocked';
-  report.reason = String(error.message).match(/.*(?:Operation not permitted|executable doesn't exist).*\n?/)?.[0]?.trim() || String(error.message).split('\n')[0];
+  const message = String(error.message);
+  report.reason = /Operation not permitted/.test(message) ? 'Browser launch blocked: Operation not permitted'
+    : /executable doesn.t exist/i.test(message) ? 'Browser executable unavailable'
+    : message.split('\n')[0].replace(/\/(?:home|tmp)\/\S+/g, '[local path]');
 } finally {
   await browser?.close(); mkdirSync(resolve(root, 'qa'), { recursive: true });
   writeFileSync(resolve(root, 'qa/browser.json'), JSON.stringify(report, null, 2) + '\n');

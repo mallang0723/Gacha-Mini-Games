@@ -3,7 +3,8 @@
   const writeLocal = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
   const saved = readLocal(SETTINGS_KEY);
   const settings = { autoOpen: saved?.autoOpen !== false, autoClose: saved?.autoClose === true };
-  const host = el('div'); host.id = APP_KEY;
+  // Stable open-shadow host lets remote controls persist a selector across reloads.
+  const host = el('div'); host.id = APP_KEY; host.dataset.testid = APP_KEY;
   const shadow = host.attachShadow({ mode: 'open' });
   const style = el('style'); style.textContent = ADAPTER_CSS; shadow.append(style);
   const makeButton = (text, action, id) => {
@@ -13,7 +14,8 @@
   const launcher = makeButton('🎮', () => {
     if (suppressClick) { suppressClick = false; return; }
     panel.hidden ? openPanel(true) : closePanel();
-  }, 'launcher');
+  }, 'gacha-minigames-launcher');
+  launcher.dataset.testid = 'gacha-minigames-launcher';
   launcher.title = '미니게임 열기 · 위아래로 이동 · 길게 눌러 위치 초기화';
   launcher.setAttribute('aria-label', launcher.title);
   launcher.setAttribute('aria-controls', 'panel'); launcher.setAttribute('aria-expanded', 'false');
@@ -78,10 +80,11 @@
   }, { signal: life.signal, capture: true });
 
   // Right-edge vertical movement only. Pointer cancellation and a long press never open the panel.
-  let position = readLocal(POSITION_KEY), drag = null, holdTimer = 0, suppressClick = false;
+  let position = readLocal(POSITION_KEY), drag = null, holdTimer = 0, suppressClick = false, suppressTimer = 0;
   const edge = 12, size = 48;
   function clampY(y) { return Math.max(edge, Math.min(Number.isFinite(y) ? y : innerHeight * .6, Math.max(edge, innerHeight - size - edge))); }
   function place(y, save = false) {
+    // Own only the vertical position; preserve remote-control classes and hiding styles.
     position = clampY(y); launcher.style.top = `${position}px`;
     if (save) writeLocal(POSITION_KEY, position);
   }
@@ -90,6 +93,7 @@
   on(window, 'resize', () => place(position, true));
   on(launcher, 'pointerdown', event => {
     if (event.button !== 0 || drag) return;
+    clearTimeout(suppressTimer);
     suppressClick = false; drag = { id: event.pointerId, y: event.clientY, start: position, moved: false };
     launcher.setPointerCapture?.(event.pointerId);
     holdTimer = setTimeout(() => { if (drag && !drag.moved) { resetPosition(); suppressClick = true; drag.reset = true; } }, 700);
@@ -105,6 +109,9 @@
     if (event.type !== 'pointerup') suppressClick = true;
     if (drag.moved) place(position, true);
     drag = null;
+    // Ignore the click dispatched immediately after a drag/hold, but do not leave a
+    // stale latch swallowing a later remote .click() when cancellation emits no click.
+    if (suppressClick) suppressTimer = setTimeout(() => { suppressClick = false; }, 0);
   }
   for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) on(launcher, type, endDrag);
   launcher.addEventListener('keydown', event => {

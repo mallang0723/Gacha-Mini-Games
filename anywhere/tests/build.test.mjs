@@ -23,6 +23,8 @@ test('파생 패치도 1회만 적용하며 빌드 결과는 재현 가능하다
 test('개인 확장 매니페스트와 키, 시스템 폰트, 상태 확인 전용 경로', () => {
   const manifest = JSON.parse(readFileSync(new URL('../dist/manifest.json', import.meta.url)));
   assert.equal(manifest.kind, 'marinara.personal-extension');
+  assert.equal(manifest.config.version, '0.2.0');
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url))).version, '0.2.0');
   assert.equal(manifest.config.runtime, 'client');
   assert.deepEqual(manifest.config.capabilities, ['full_page_access']);
   assert.match(manifest.config.description, /gacha_minigames_me/);

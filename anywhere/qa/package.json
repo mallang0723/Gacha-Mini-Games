@@ -1,11 +1,11 @@
 {
   "file": "gacha_minigames_me.personal-extension.zip",
-  "bytes": 59877,
-  "sha256": "65ccf5a8d578fa1ff048fb954c36e0d265309b63bb14329d888f935c619404a3",
+  "bytes": 60447,
+  "sha256": "63ac315c3cf95f45e2b545cef5c55010ca9b5827f78f122624eb69b8412e5633",
   "files": {
-    "manifest.json": "235e10e1a535d089417f5726fce3c12a3bd19f32db96ed35f62c5a3ad15d8b5c",
-    "extension.js": "e6c0231f02f4658a92fa122939af319246b3431555ff831a6d019f8c620a2487",
-    "README.md": "1f4ea84337834b2f6efa4bafc65db56c68ea6093779a2a6935450e07015c43fe",
+    "manifest.json": "cbf196d807486a816c0c2bb1569c8ada40bd9419745ddeaddcafbc3b159b2f54",
+    "extension.js": "bf6b9b974ef032af1f24c1d20617341ee79e89e319f284a477db4c97dfde9479",
+    "README.md": "fc4ac7f14367344b9cabf212f080607d1655eb840ba8e43afd195dc33429eb2b",
     "NOTICE": "7c7337ed7d402b3a3b9b0f93025cf6fd41d66a48b599a21a71d1b0d2e6d5b382"
   }
 }

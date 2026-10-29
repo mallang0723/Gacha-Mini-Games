@@ -7,7 +7,7 @@ button,input,summary { font:inherit; }
 button,summary { cursor:pointer; }
 button { color:inherit; background:var(--gfx-card,#FFFDF5); border:2px solid var(--gfx-line,#6B4528); border-radius:14px; padding:8px 12px; min-width:44px; min-height:44px; }
 button:focus-visible,summary:focus-visible,input:focus-visible { outline:3px solid var(--gfx-accent,#F0763A); outline-offset:2px; }
-#launcher { position:fixed; right:max(12px,env(safe-area-inset-right)); width:48px; height:48px; padding:0; font-size:24px; pointer-events:auto; touch-action:none; user-select:none; box-shadow:0 3px 0 var(--gfx-line,#6B4528); }
+#gacha-minigames-launcher { position:fixed; right:max(12px,env(safe-area-inset-right)); width:48px; height:48px; padding:0; font-size:24px; pointer-events:auto; touch-action:none; user-select:none; box-shadow:0 3px 0 var(--gfx-line,#6B4528); }
 #panel { position:fixed; right:12px; bottom:max(76px,env(safe-area-inset-bottom)); width:min(960px,calc(100vw - 24px)); height:min(740px,calc(100vh - 96px)); height:min(740px,calc(100dvh - 96px)); display:flex; flex-direction:column; gap:8px; padding:12px; pointer-events:auto; border:3px solid var(--gfx-line,#6B4528); border-radius:20px; background:var(--gfx-ink,#FFF4D9); box-shadow:0 8px 32px #0003; overflow:auto; }
 header { display:flex; justify-content:space-between; align-items:center; gap:8px; flex:none; }
 header strong { font-size:16px; }

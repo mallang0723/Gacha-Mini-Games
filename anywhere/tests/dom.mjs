@@ -65,7 +65,7 @@ export async function setup(options = {}) {
   const update = patch => { state = { ...state, ...patch }; subscriptions.forEach(fn => fn(state)); };
   const pointer = (type, y, x = 340) => {
     const e = new w.Event(type, { bubbles: true, cancelable: true });
-    Object.assign(e, { pointerId: 1, clientY: y, clientX: x, button: 0 }); root.getElementById('launcher').dispatchEvent(e);
+    Object.assign(e, { pointerId: 1, clientY: y, clientX: x, button: 0 }); root.getElementById('gacha-minigames-launcher').dispatchEvent(e);
   };
   const keyboard = (target, key) => {
     const e = new w.KeyboardEvent('keydown', { key, bubbles: true, composed: true, cancelable: true }); target.dispatchEvent(e); return e;
